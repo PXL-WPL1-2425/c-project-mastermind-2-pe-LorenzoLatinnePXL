@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mastermind"
         mc:Ignorable="d"
-        Title="Mastermind" Height="950" Width="750" Loaded="Window_Loaded" KeyDown="ToggleDebug" Background="White">
+        Title="Mastermind" Height="850" Width="750" Loaded="Window_Loaded" KeyDown="ToggleDebug" Background="White">
     <DockPanel>
         <Menu DockPanel.Dock="Top" Height="18">
             <MenuItem Header="Bestand">
@@ -17,6 +17,7 @@
                 <MenuItem Header="Aantal pogingen"></MenuItem>
             </MenuItem>
         </Menu>
+        <TextBox x:Name="solutionTextBox" DockPanel.Dock="Bottom" Height="30px" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden" IsEnabled="False" />
         <Grid x:Name="gameGrid">
         <Grid.Background>
             <ImageBrush ImageSource="/assets/pokemon-background.jpg" Stretch="UniformToFill"/>
@@ -50,7 +51,7 @@
         <Label Name="colorLabel4" Grid.Column="3" Grid.Row="2"/>
 
 
-        <Grid x:Name="HistoryGrid" Grid.Row="3" Grid.ColumnSpan="4" Height="675">
+        <Grid x:Name="HistoryGrid" Grid.Row="3" Grid.ColumnSpan="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -59,8 +60,6 @@
             </Grid.ColumnDefinitions>
         </Grid>
 
-        <TextBox x:Name="solutionTextBox" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Height="30px" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden" IsEnabled="False" />
     </Grid>
-
     </DockPanel>
 </Window>

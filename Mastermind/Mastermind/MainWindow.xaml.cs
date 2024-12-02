@@ -37,7 +37,7 @@ namespace Mastermind
         string[] options = { "Bulbasaur", "Charmander", "Eevee", "Meowth", "Pikachu", "Squirtle" };
         string[] highscores = new string[15];
         string username, highscoreText;
-        int attempts, currentRow, score, playerIndex;
+        int attempts, maxAttempts, currentRow, score, playerIndex;
         bool debugMode, hasWon;
 
         public MainWindow()
@@ -56,6 +56,7 @@ namespace Mastermind
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             playerIndex = 0;
+            ChooseMaxAttempts();
             StartGame();
 
             // Get pictures from assets folder and put them in the BitmapImages array.
@@ -218,7 +219,7 @@ namespace Mastermind
         /// </summary>
         private void UpdateLabels()
         {
-            attemptsLabel.Content = $"Attempt: {attempts} / 10";
+            attemptsLabel.Content = $"Attempt: {attempts} / {maxAttempts}";
             attemptsLabel.Foreground = attempts >= 8 ? Brushes.Red : attempts >= 5 ? Brushes.Orange : Brushes.Black;
             attemptsLabel.FontWeight = attempts >= 8 ? FontWeights.Bold : attempts >= 5 ? FontWeights.DemiBold : FontWeights.Normal;
             scoreLabel.Content = $"Score: {score} / 100";
@@ -236,7 +237,7 @@ namespace Mastermind
                 comboBoxes[i].SelectedValue = 2;
                 labels[i].BorderBrush = null;
             }
-        }
+        } 
 
         /// <summary>
         /// Generates a random solution for the game by selecting random images within the amount of options.
@@ -258,14 +259,14 @@ namespace Mastermind
         /// <param name="e">The actual click of the button.</param>
         private void checkButton_Click(object sender, RoutedEventArgs e)
         {
-            if (attempts + 1 != 11)
+            if (attempts != maxAttempts)
             {
                 CheckIfPlayerHasWon();
                 attempts++;
                 CreateRow();
                 UpdateLabels();
 
-                if (attempts + 1 == 11 && !hasWon)
+                if (attempts + 1 == maxAttempts + 1 && !hasWon)
                 {
                     highscores[playerIndex] = $"{username} - {attempts} attempts - {score}/100";
                     checkButton.Content = "Game Over";
@@ -407,6 +408,16 @@ namespace Mastermind
             else
             {
                 return hasWon = false;
+            }
+        }
+
+        private void ChooseMaxAttempts()
+        {
+            bool isValidAttempts = int.TryParse(Interaction.InputBox("Amount of attempts: ", "Choose between 3 and 20."), out maxAttempts);
+
+            while (!isValidAttempts || maxAttempts < 3 || maxAttempts > 20)
+            {
+                isValidAttempts = int.TryParse(Interaction.InputBox("Amount of attempts: ", "Choose between 3 and 20."), out maxAttempts);
             }
         }
     }
