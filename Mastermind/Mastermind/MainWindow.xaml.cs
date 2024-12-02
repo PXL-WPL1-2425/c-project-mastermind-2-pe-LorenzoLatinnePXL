@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -68,6 +69,14 @@ namespace Mastermind
         /// </summary>
         private void StartGame()
         {
+
+            string username = Interaction.InputBox("Username: ", "Choose your username");
+            while (string.IsNullOrEmpty(username))
+            {
+                MessageBox.Show("Choose a username.", "Invalid username");
+                username = Interaction.InputBox("Username: ", "Choose your username");
+            }
+
             attempts = 0;
             currentRow = 0;
             score = 100;
