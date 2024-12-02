@@ -323,6 +323,11 @@ namespace Mastermind
             }
         }
 
+        private void Afsluiten_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
         /// <summary>
         /// Checks if the text selected in the ComboBox is in the correct position within the solution.
         /// </summary>
@@ -390,31 +395,6 @@ namespace Mastermind
             {
                 return hasWon = false;
             }
-        }
-
-        /// <summary>
-        /// Handles the Window Closing event. Displays a confirmation message if the player tries to quit before finishing the game.
-        /// </summary>
-        /// <param name="sender">The window that gets closed.</param>
-        /// <param name="e">The actual clicking on the closing button of the window.</param>
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (!forceQuit)
-            {
-                MessageBoxResult answer = MessageBox.Show($"Would you like to quit the game?\nYou still have {10 - attempts} attempts left.", "Exit Game", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (answer == MessageBoxResult.Yes)
-                {
-                    e.Cancel = false;
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            } else
-            {
-                e.Cancel = false;
-            }
-
         }
     }
 }
