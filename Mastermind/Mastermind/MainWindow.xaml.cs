@@ -237,7 +237,7 @@ namespace Mastermind
                 comboBoxes[i].SelectedValue = 2;
                 labels[i].BorderBrush = null;
             }
-        } 
+        }
 
         /// <summary>
         /// Generates a random solution for the game by selecting random images within the amount of options.
@@ -337,6 +337,11 @@ namespace Mastermind
             }
         }
 
+        /// <summary>
+        /// Handles the Afsluiten menuItem click event to close the program.
+        /// </summary>
+        /// <param name="sender">The menuItem in "Bestand" that's named "Afsluiten"</param>
+        /// <param name="e">"The actual clicking on the menuItem</param>
         private void Afsluiten_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -360,7 +365,7 @@ namespace Mastermind
         private void CreateRow()
         {
             RowDefinition rowDefinition = new RowDefinition();
-            rowDefinition.Height = GridLength.Auto;
+            rowDefinition.Height = new GridLength(1, GridUnitType.Star);
             HistoryGrid.RowDefinitions.Add(rowDefinition);
 
             for (int i = 0; i < 4; i++)
@@ -372,8 +377,16 @@ namespace Mastermind
                 playerGuess.Width = 64;
                 playerGuess.Margin = new Thickness(1);
 
-                Grid.SetRow(playerGuess, currentRow);
-                Grid.SetColumn(playerGuess, i);
+                if (currentRow < 9)
+                {
+                    Grid.SetRow(playerGuess, currentRow);
+                    Grid.SetColumn(playerGuess, i);
+                }
+                else
+                {
+                    Grid.SetRow(playerGuess, currentRow - 9);
+                    Grid.SetColumn(playerGuess, i + 4);
+                }
 
                 HistoryGrid.Children.Add(playerGuess);
 
@@ -393,9 +406,9 @@ namespace Mastermind
         }
 
         /// <summary>
-        /// Checks if the player has guessed the correct solution sequence.
+        /// Checks if the text in the ComboBox corresponds with the text in the solution string at its respective index.
         /// </summary>
-        /// <returns>True if the player's guess matches the solution; otherwise, false.</returns>
+        /// <returns>If the text is the same in all places, sets hasWon to true; otherwise, returns false.</returns>
         private bool CheckIfPlayerHasWon()
         {
             if (ComboBoxOption1.Text == solution[0] &&
@@ -411,6 +424,10 @@ namespace Mastermind
             }
         }
 
+        /// <summary>
+        /// Allows the player(s) to choose their number of attempts at the start of the game.
+        /// The choice that's made here is used for all players for the length of the overall game.
+        /// </summary>
         private void ChooseMaxAttempts()
         {
             bool isValidAttempts = int.TryParse(Interaction.InputBox("Amount of attempts: ", "Choose between 3 and 20."), out maxAttempts);
@@ -418,6 +435,16 @@ namespace Mastermind
             while (!isValidAttempts || maxAttempts < 3 || maxAttempts > 20)
             {
                 isValidAttempts = int.TryParse(Interaction.InputBox("Amount of attempts: ", "Choose between 3 and 20."), out maxAttempts);
+            }
+
+            if (maxAttempts > 10)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    ColumnDefinition columnDefinition = new ColumnDefinition();
+                    columnDefinition.Width = new GridLength(1, GridUnitType.Star);
+                    HistoryGrid.ColumnDefinitions.Add(columnDefinition);
+                }
             }
         }
     }
