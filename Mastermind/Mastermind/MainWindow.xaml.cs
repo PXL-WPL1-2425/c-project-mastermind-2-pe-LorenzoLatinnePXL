@@ -35,8 +35,10 @@ namespace Mastermind
         string[] colors = new string[4];
         string[] solution = new string[4];
         string[] options = { "Bulbasaur", "Charmander", "Eevee", "Meowth", "Pikachu", "Squirtle" };
-        int attempts, currentRow, score;
-        bool debugMode, hasWon, forceQuit;
+        string[] highscores = new string[15];
+        string username, highscoreText;
+        int attempts, currentRow, score, playerIndex;
+        bool debugMode, hasWon;
 
         public MainWindow()
         {
@@ -53,6 +55,7 @@ namespace Mastermind
         /// <param name="e">Event data for the Loaded event.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            playerIndex = 0;
             StartGame();
 
             // Get pictures from assets folder and put them in the BitmapImages array.
@@ -70,7 +73,7 @@ namespace Mastermind
         private void StartGame()
         {
 
-            string username = Interaction.InputBox("Username: ", "Choose your username");
+            username = Interaction.InputBox("Username: ", "Choose your username");
             while (string.IsNullOrEmpty(username))
             {
                 MessageBox.Show("Choose a username.", "Invalid username");
@@ -81,7 +84,6 @@ namespace Mastermind
             currentRow = 0;
             score = 100;
             debugMode = false;
-            forceQuit = false;
             solutionTextBox.Visibility = Visibility.Hidden;
             hasWon = false;
             InitalizeColors();
@@ -265,31 +267,42 @@ namespace Mastermind
 
                 if (attempts + 1 == 11 && !hasWon)
                 {
+                    highscores[playerIndex] = $"{username} - {attempts} attempts - {score}/100";
                     checkButton.Content = "Game Over";
                     MessageBoxResult result = MessageBox.Show($"Game Over.\nThe code was:\n{String.Join(", ", solution)}\n\nTry again?", "Game over", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)
                     {
+                        ClearComboBoxSelection(labels);
+                        playerIndex++;
                         ClearGridSection();
                         StartGame();
                     }
                     else
                     {
-                        forceQuit = true;
+                        for (int i = 0; i <= playerIndex; i++)
+                        {
+                            highscoreText += $"{highscores[i]}\n";
+                        }
+
+                        MessageBox.Show($"Highscores:\n{highscoreText}");
                         this.Close();
                     }
                 }
                 else if (hasWon)
                 {
+                    highscores[playerIndex] = $"{username} - {attempts} attempts - {score}/100";
                     checkButton.Content = "Victory";
-                    forceQuit = true;
                     MessageBoxResult result = MessageBox.Show($"You won in {attempts} attempts, play again?", "You won", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)
                     {
+                        ClearComboBoxSelection(labels);
+                        playerIndex++;
                         ClearGridSection();
                         StartGame();
                     }
                     else
                     {
+                        MessageBox.Show($"Highscores:\n{highscoreText}");
                         this.Close();
                     }
                 }
