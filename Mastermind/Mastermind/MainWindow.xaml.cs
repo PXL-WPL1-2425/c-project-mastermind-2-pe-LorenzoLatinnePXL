@@ -220,8 +220,8 @@ namespace Mastermind
         private void UpdateLabels()
         {
             attemptsLabel.Content = $"Attempt: {attempts} / {maxAttempts}";
-            attemptsLabel.Foreground = attempts >= 8 ? Brushes.Red : attempts >= 5 ? Brushes.Orange : Brushes.Black;
-            attemptsLabel.FontWeight = attempts >= 8 ? FontWeights.Bold : attempts >= 5 ? FontWeights.DemiBold : FontWeights.Normal;
+            attemptsLabel.Foreground = attempts >= (maxAttempts * 0.8) ? Brushes.Red : attempts >= (maxAttempts * 0.5) ? Brushes.Orange : Brushes.Black;
+            attemptsLabel.FontWeight = attempts >= (maxAttempts * 0.8) ? FontWeights.Bold : attempts >= (maxAttempts * 0.5) ? FontWeights.DemiBold : FontWeights.Normal;
             scoreLabel.Content = $"Score: {score} / 100";
             solutionTextBox.Text = String.Join(", ", solution);
         }
@@ -266,7 +266,7 @@ namespace Mastermind
                 CreateRow();
                 UpdateLabels();
 
-                if (attempts + 1 == maxAttempts + 1 && !hasWon)
+                if (attempts == maxAttempts && !hasWon)
                 {
                     highscores[playerIndex] = $"{username} - {attempts} attempts - {score}/100";
                     checkButton.Content = "Game Over";
@@ -373,20 +373,48 @@ namespace Mastermind
                 ComboBox combobox = comboBoxes[i];
                 Label playerGuess = new Label();
                 playerGuess.Background = labels[i].Background;
-                playerGuess.Height = 64;
-                playerGuess.Width = 64;
                 playerGuess.Margin = new Thickness(1);
 
-                if (currentRow < 9)
+                // Change the size of images depending on how many guesses a player can make.
+                if (maxAttempts < 16)
                 {
-                    Grid.SetRow(playerGuess, currentRow);
-                    Grid.SetColumn(playerGuess, i);
-                }
+                    playerGuess.Height = 64;
+                    playerGuess.Width = 64;
+                } 
                 else
                 {
-                    Grid.SetRow(playerGuess, currentRow - 9);
-                    Grid.SetColumn(playerGuess, i + 4);
+                    playerGuess.Height = 48;
+                    playerGuess.Width = 48;
                 }
+
+                // Use the extra columnDefintion if it has been created, because of more than 16 possible attempts.
+                if (maxAttempts < 16)
+                {
+                    if (currentRow < 8)
+                    {
+                        Grid.SetRow(playerGuess, currentRow);
+                        Grid.SetColumn(playerGuess, i);
+                    }
+                    else
+                    {
+                        Grid.SetRow(playerGuess, currentRow - 8);
+                        Grid.SetColumn(playerGuess, i + 4);
+                    }
+                } 
+                else
+                {
+                    if (currentRow < 10)
+                    {
+                        Grid.SetRow(playerGuess, currentRow);
+                        Grid.SetColumn(playerGuess, i);
+                    }
+                    else
+                    {
+                        Grid.SetRow(playerGuess, currentRow - 10);
+                        Grid.SetColumn(playerGuess, i + 4);
+                    }
+                }
+ 
 
                 HistoryGrid.Children.Add(playerGuess);
 
@@ -437,7 +465,7 @@ namespace Mastermind
                 isValidAttempts = int.TryParse(Interaction.InputBox("Amount of attempts: ", "Choose between 3 and 20."), out maxAttempts);
             }
 
-            if (maxAttempts > 10)
+            if (maxAttempts > 8)
             {
                 for (int i = 0; i < 4; i++)
                 {
